@@ -1,3 +1,4 @@
+# import the packages which are needed in this file
 import os
 import glob
 import psycopg2
@@ -6,9 +7,13 @@ import numpy as np
 from sql_queries import *
 
 
+# define functions
 def get_files(filepath):
-    """This function helps us to go through all files which are ended with '.json'
-    ,get their path, and save these path in an list.
+    """
+    Description: 
+        This function helps us to go through all files which are ended with '.json'
+        ,get their path, and save these path in an list.
+    Parameters: None
     """
     # define an empty list for store all file path
     all_files = []
@@ -22,16 +27,24 @@ def get_files(filepath):
 
 
 def process_song_file(conn, cur, filepath):
-    """This function helps us get song data in all song.json files and put them all
-    in an overall dataframe. After that, it creates two dataframes(song_data and artist 
-    dataframe) by retrieving needed columns from the overall dataframe. Then, this 
-    function moves data in song_data dataframe and artist dataframe to song table and 
-    artist table in postgres database. This function can be seperated into three parts. 
-    The part1 is getting data and save them in an overall dataframe. The part2 is 
-    inserting data into song table in postgres database. The part3 is inserting data 
-    into artist table in artist table in postgres.
-    """    
-    # PART1: retrieve data from all song files and save them in an overall dataframe 
+    """
+    Description: 
+        This function helps us get song data in all song.json files and put them all
+        in an overall dataframe. After that, it creates two dataframes(song_data and artist 
+        dataframe) by retrieving needed columns from the overall dataframe. Then, this 
+        function moves data in song_data dataframe and artist dataframe to song table and 
+        artist table in postgres database. This function can be seperated into three parts. 
+        -The part1 is getting data and save them in an overall dataframe. 
+        -The part2 is inserting data into song table in postgres database. 
+        -The part3 is inserting data into artist table in artist table in postgres.
+    Parameters:
+        -conn: connection object (with Postgres)
+        -cur: cursor object
+        -filepath: the file path of song data
+    """
+    #-----PART1: retrieve data from all song files and save them in an overall dataframe-----#
+    print('start to process song files...')
+    print('get song file path...')
     song_files = get_files(filepath)
     song_file_str = ""
     
@@ -49,13 +62,14 @@ def process_song_file(conn, cur, filepath):
     
     # clean the overall dataframe because it has some duplications and incongruent values
     # such as np.nan and ''. We will replace np.nan and '' by 'None' 
-    song_file_df = song_file_df.drop_duplicates(keep='first')
+    song_file_df = song_file_df.drop_duplicates(subset='song_id', keep='first')
     song_file_df = song_file_df.fillna(value='None')
     song_file_df = song_file_df.replace('', 'None')
     
     
-    # PART2: insert data into song table
+    #-----PART2: insert data into song table-----#
     # retrieve data from the overall dataframe and make song_data dataframe
+    print('create song table in Postgres...')
     song_data_df = song_file_df.loc[:,['song_id', 'title', 'artist_id', 'year', 'duration']]
     song_data_list = song_data_df.values.tolist()
     
@@ -65,9 +79,11 @@ def process_song_file(conn, cur, filepath):
         conn.commit()
  
 
-    # PART3: insert data into artist table
+    #-----PART3: insert data into artist table-----#
     # retrieve data from the overall dataframe and make artist_data dataframe
+    print('create artist table in Postgres...')
     artist_data_df = song_file_df.loc[:,['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude"']]
+    artist_data_df = artist_data_df.drop_duplicates(subset='artist_id', keep='first')
     artist_data_list = artist_data_df.replace(np.nan, 'None').values.tolist()
 
     # instert data into artist table
@@ -77,16 +93,25 @@ def process_song_file(conn, cur, filepath):
     
 
 def process_log_file(conn, cur, filepath):
-    """This function helps us get log data in all log.json files and put them all
-    in an overall dataframe. After that, it creates three dataframes(time, user, 
-    and songplay dataframe) by retrieving needed columns from the overall dataframe. 
-    Then, this function moves data from time, user and songplay dataframe to tables 
-    in postgres database. This function can be seperated into four parts. Part1 is 
-    getting data and save them in an overall dataframe. The part2 is inserting data 
-    into postgres time table. Part3 is inserting data into postgres user table. Part4
-    is inserting data into postgres songplay table
     """
-    # PART1: retrieve data from all song files and save them in an overall dataframe 
+    Description: 
+        This function helps us get log data in all log.json files and put them all
+        in an overall dataframe. After that, it creates three dataframes(time, user, 
+        and songplay dataframe) by retrieving needed columns from the overall dataframe. 
+        Then, this function moves data from time, user and songplay dataframe to tables 
+        in postgres database. This function can be seperated into four parts. 
+            -Part1 is getting data and save them in an overall dataframe.
+            -Part2 is inserting data into postgres time table. 
+            -Part3 is inserting data into postgres user table. 
+            -Part4 is inserting data into postgres songplay table
+    Parameters:
+        -conn: connection object (with Postgres)
+        -cur: cursor object
+        -filepath: the file path of log data
+    """
+    #-----PART1: retrieve data from all song files and save them in an overall dataframe-----#
+    print('start to process log files...')
+    print('get log file path...')
     log_files = get_files(filepath)    
     log_file_str = ""
 
@@ -110,9 +135,9 @@ def process_log_file(conn, cur, filepath):
     log_file_df = log_file_df.replace('', 'None')
 
     
-    # PART2: insert data into time table
-    # retrieve data from the overall dataframe and make song_data dataframe and filter by
-    # NextSong action    
+    #-----PART2: insert data into time table-----#
+    # retrieve data from the overall dataframe and make song_data dataframe and filter by NextSong
+    print('create time table in Postgres...')
     filtered_log_file_df = log_file_df[log_file_df['page'] == 'NextSong']    
     
     # convert timestamp column to datetime
@@ -132,7 +157,8 @@ def process_log_file(conn, cur, filepath):
     time_data_df.columns = ['timestamp', 'hour', 'day', 'weekofYear', 'month', 'year', 'weekday']
     
     # clean the overall dataframe because it has some duplications    
-    time_data_df = time_data_df.drop_duplicates(keep='first')
+    time_data_df = time_data_df.drop_duplicates(subset='timestamp', keep='first')
+    
     time_data_list = time_data_df.values.tolist()
 
     # insert data into time table
@@ -141,10 +167,11 @@ def process_log_file(conn, cur, filepath):
         conn.commit()
 
                 
-    # PART3: insert data into user table        
+    #-----PART3: insert data into user table-----#        
     # retrieve data from the overall dataframe and make user dataframe
+    print('create user table in Postgres...')
     user_df = log_file_df.loc[:,['userId', 'firstName', 'lastName', 'gender', 'level']]
-    user_df = user_df.drop_duplicates(keep='first')
+    user_df = user_df.drop_duplicates(subset = 'userId', keep='first')
     user_list = user_df.values.tolist()
 
     # insert user records
@@ -153,8 +180,9 @@ def process_log_file(conn, cur, filepath):
         conn.commit()
 
         
-    # PART4: insert data into songplay table          
+    #-----PART4: insert data into songplay table-----#          
     # read two tables and get the data needed (song and artist) from postgres data
+    print('create songplay table in Postgres...')
     song_join_artist_df = pd.read_sql(song_select,conn)
 
     # change the datatype of duration column and reset the song_join_artist_df index 

@@ -14,6 +14,7 @@ The fact table is songplay, it includes information about songplay history. The 
 <p align="center">
   <img src="https://upload.cc/i1/2019/08/25/gM9qd6.jpg">
 </p>
+
 ------------
 #### FILES IN THE REPOSITORY
 1. **ETL.ipynb**: a jupyter notebook file which detail how access to Postgres database, extract data from the song and log file, transform song and log data into the format the analytics team wants, and dump data into Postgres database.

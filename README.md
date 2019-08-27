@@ -1,4 +1,8 @@
-# Data modeling with Postgres (By using Sparkify data)
+<p align="center">
+  <img width="530" height="270" src="https://upload.cc/i1/2019/08/28/1cL7o6.jpeg">
+</p>
+
+# Data modeling with PostgresSQL (By using Sparkify data)
 #### PROJECT BACKGROUND AND SUMMARY
 - ###### BACKGROUND
 Sparkify is a startup company which provides the music streaming app. Recently, the analytics team in this company is interested in understanding their user activity on its music streaming app in order to provide better user experience for their user. This project aims for creating a SQL database which hosts all user activity data, song data, and user’s personal data. By having this SQL database, the analytics team can analyze the data, give suggestions to the APP development team, and improve the product.  
@@ -7,7 +11,9 @@ Sparkify is a startup company which provides the music streaming app. Recently, 
 In this project, it will create an ETL data pipeline to extract data from log dataset and song dataset, transform these data into a format which analytics team prefers, and put data into a Postgres database. As the amount of data is huge and access speed is important for analytics team, this project decides to use star schema to store the data and improve access to data. 
 The fact table is songplay, it includes information about songplay history. The dimension tables are user, song, artist, and time. User table includes the user's personal information. Song table includes the song's information. Time table includes when a song is played. The structure can be seen in the below picture.
 
-![](https://upload.cc/i1/2019/07/30/K4u9Ee.jpg)
+<p align="center">
+  <img src="https://upload.cc/i1/2019/08/25/gM9qd6.jpg">
+</p>
 ------------
 #### FILES IN THE REPOSITORY
 1. **ETL.ipynb**: a jupyter notebook file which detail how access to Postgres database, extract data from the song and log file, transform song and log data into the format the analytics team wants, and dump data into Postgres database.

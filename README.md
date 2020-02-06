@@ -1,8 +1,8 @@
 <p align="center">
-  <img width="530" height="270" src="https://upload.cc/i1/2019/08/28/1cL7o6.jpeg">
+  <img width="530" height="270" src="https://github.com/ChunYen-Chang/Data-Modeling-with-Postgres/blob/master/image/postgres_logo.jpeg">
 </p>
 
-# Data modeling with PostgresSQL (By using Sparkify data)
+# Data modeling with PostgreSQL (By using Sparkify data)
 #### PROJECT BACKGROUND AND SUMMARY
 - ###### BACKGROUND
 Sparkify is a startup company which provides the music streaming app. Recently, the analytics team in this company is interested in understanding their user activity on its music streaming app in order to provide better user experience for their user. This project aims for creating a SQL database which hosts all user activity data, song data, and user’s personal data. By having this SQL database, the analytics team can analyze the data, give suggestions to the APP development team, and improve the product.  
@@ -12,7 +12,7 @@ In this project, it will create an ETL data pipeline to extract data from log da
 The fact table is songplay, it includes information about songplay history. The dimension tables are user, song, artist, and time. User table includes the user's personal information. Song table includes the song's information. Time table includes when a song is played. The structure can be seen in the below picture.
 
 <p align="center">
-  <img src="https://upload.cc/i1/2019/08/25/gM9qd6.jpg">
+  <img src="https://github.com/ChunYen-Chang/Data-Modeling-with-Postgres/blob/master/image/data_modeling.jpg">
 </p>
 
 ------------
